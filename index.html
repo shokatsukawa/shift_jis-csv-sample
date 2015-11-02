@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>Shift_JIS CSV SAMPLE</title>
+  <script src="encoding/encoding.js"></script>
+</head>
+<body>
+  <a id="js-download" href="dummy">download</a>
+  <script>
+    var convert = function(str) {
+      var array = [],i,il=str.length;
+      for (i=0; i<il; i++) array.push(str.charCodeAt(i));
+      return array;
+    };
+    var csv_data = [
+      ['日本語の', 'CSVの', 'サンプルです'],
+      ['"クォ""テーション"', '"セル内\n改行"', '="00001"']
+    ].map(function(l) {
+      return l.join(',')
+    }).join('\r\n');
+
+    var array = convert(csv_data);
+    var sjis_array = Encoding.convert(array, "SJIS");
+    var uint8_array = new Uint8Array(sjis_array);
+    var blob = new Blob([uint8_array], { type: 'text/csv' });
+
+    var url = (window.URL || window.webkitURL).createObjectURL(blob);
+    var a = document.getElementById('js-download');
+    a.download = 'filename.csv';
+    a.href = url;
+  </script>
+</body>
+</html>
